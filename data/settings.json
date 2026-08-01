@@ -1,0 +1,6 @@
+{
+  "theme": "Dark",
+  "default_view": "All Games",
+  "confirm_delete": true,
+  "launch_behavior": "Keep library open"
+}

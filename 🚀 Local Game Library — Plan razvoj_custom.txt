@@ -1,0 +1,153 @@
+Ovo je izuzetno dobro osmišljen i detaljan plan razvoja! Jasnoća, struktura i logičan redosled faza su na visokom nivou. Posebno mi se dopada naglasak na "offline-first" ponašanje i promišljena arhitektura metadata sistema.
+
+Evo mojih komentara, sugestija i predloga za optimizaciju redosleda nekih faza, uzimajući u obzir da su neke arhitektonske odluke bolje definisati pre nego što se implementiraju funkcije koje ih koriste.
+
+---
+
+### **Opšti Utisci:**
+
+*   **Sveobuhvatnost:** Pokriven je ogroman spektar funkcionalnosti, od osnovnog UX-a do naprednih sistemskih integracija i inteligencije.
+*   **Jasnoća:** Svaka tačka je jasno definisana i objašnjena.
+*   **Logičan pristup:** Generalno, put od osnovnih do naprednih funkcija je dobro trasiran.
+*   **Foresight:** Posebno cenim "Offline-first ponašanje" i "Metadata pipeline" kao arhitektonske odluke koje će dugoročno učiniti projekat robusnijim i lakšim za održavanje.
+
+---
+
+### **Predlozi i Preporuke za Redosled i Dodatna Razmatranja:**
+
+**FAZA 0 — Trenutno stanje**
+*   **Komentar:** Odlična polazna tačka. Sve što je do sada urađeno je solidna osnova.
+
+---
+
+**FAZA 1 — Završavanje osnovne biblioteke**
+1.  **Empty State**
+2.  **Favorites sistem**
+3.  **Search**
+4.  **Genre sistem**
+*   **Komentar:** Ovo je savršena faza za zaokruživanje prve, potpuno upotrebljive (iako osnovne) verzije aplikacije. Ovo je u suštini vaš MVP (Minimum Viable Product) sa osnovnim UX-om.
+
+---
+
+**PREPORUČENA NOVA FAZA (FAZA 2 - Arhitektonske Osnove i Podaci)**
+*   **Obrazloženje:** Funkcionalnosti "Pametno dodavanje igara" (trenutna Faza 2 i Faza 3) i "Automatski Game Scanner" (trenutna Faza 4) u velikoj meri zavise od definisanog "Metadata sistema" (trenutna Faza 5) i "Game identity sistema" (trenutna Faza 6). Bolje je da se ove arhitektonske osnove postave *pre* nego što se implementiraju funkcije koje ih koriste.
+
+**5. Game Identity Sistem (premešteno iz FAZE 6)**
+    *   **Komentar:** Ovo je *ključno* za bilo kakvo pametno prepoznavanje, sprečavanje duplikata, skeniranje i generalno stabilnost biblioteke. Treba ga definisati što ranije.
+    *   **Dodatno razmatranje:** Kako ćete generisati / dobiti `Game ID`? Da li će to biti interni GUID, ID sa eksternog API-ja ili kombinacija? Kako će se Game Name mapirati na eksterne izvore ako se ime malo razlikuje?
+
+**6. Metadata Pipeline (premešteno iz FAZE 5)**
+    *   **Komentar:** Dizajn ovog sistema je neophodan pre nego što se krene sa "Automatskim prepoznavanjem".
+    *   **Dodatno razmatranje:** Koji će biti *primarni* metadata provider? Razmislite o API ključevima, rate limitima i uslovima korišćenja. Razmislite o tome kako ćete se nositi sa situacijama kada jedan provider nema sve podatke ili kada se podaci razlikuju između providera.
+
+**7. Metadata Cache (premešteno iz FAZE 5)**
+    *   **Komentar:** Direktno podržava "Offline-first" i efikasnost. Mora biti definisan zajedno sa pipeline-om.
+    *   **Dodatno razmatranje:** Šta će se keširati (tekstualni podaci, slike)? Kako će se upravljati "starim" keširanim podacima (npr. periodično osvežavanje)?
+
+**8. Offline-first Ponašanje (detaljno razrada, bazirano na FAZI 2)**
+    *   **Komentar:** Pošto su sada definisani "Metadata Pipeline", "Cache" i "Game Identity", sada se ovo može preciznije implementirati.
+    *   **Dodatno razmatranje:** Kako će se detektovati internet konekcija? Kako će se upravljati *redom* igara koje čekaju metadata? (Što nas dovodi do sledeće tačke).
+
+**9. Missing Metadata Queue (premešteno iz FAZE 6)**
+    *   **Komentar:** Direktno podržava "Offline-first" i automatsko dopunjavanje podataka.
+    *   **Dodatno razmatranje:** Da li će korisnik imati uvid u ovaj red? Da li će moći ručno da pokrene osvežavanje za određenu igru?
+
+---
+
+**NOVA FAZA 3 — Pametno dodavanje igara (Ručno)**
+*   **Obrazloženje:** Sada kada su arhitektonske osnove postavljene, možemo implementirati *kako* se igre pametno dodaju, počevši od ručnih inputa.
+
+**10. Automatsko prepoznavanje igre (.exe input) (premešteno iz FAZA 2)**
+    *   **Komentar:** Sada će ovo koristiti "Game Identity Sistem" i "Metadata Pipeline" za prepoznavanje.
+    *   **Dodatno razmatranje:** Šta ako prepoznavanje ne uspe? Dati korisniku opciju da ručno unese podatke ili ih izmeni.
+
+**11. "Drag shortcut here" (premešteno iz FAZA 3)**
+    *   **Komentar:** Koristi istu logiku prepoznavanja kao gore, ali sa ulazom iz shortcuta.
+    *   **Dodatno razmatranje:** Da li će biti podržani svi tipovi shortcuta (.lnk, .url, Steam shortcuts)?
+
+---
+
+**NOVA FAZA 4 — Automatski Game Scanner**
+*   **Obrazloženje:** Scanner se oslanja na iste arhitektonske komponente kao i ručno pametno dodavanje, ali automatizovano.
+
+**12. Automatsko pronalaženje instaliranih igara (premešteno iz FAZA 4)**
+    *   **Komentar:** Koristi "Game Identity Sistem" za prepoznavanje i sprečavanje duplikata.
+    *   **Dodatno razmatranje:** Kako će se rukovati dozvolama za pristup sistemskim folderima (npr. Program Files, Steam instalacioni folderi)? Dati korisniku kontrolu nad lokacijama za skeniranje. Opcije za "deep scan" vs "shallow scan".
+
+**13. Automatsko dodavanje pronađenih igara (premešteno iz FAZA 4)**
+    *   **Komentar:** Ključna funkcija skenera.
+
+---
+
+**NOVA FAZA 5 — Upravljanje bibliotekom**
+*   **Obrazloženje:** Sada kada je biblioteka popunjena i pametna, korisnik mora da ima punu kontrolu nad njom.
+
+**14. Game Management (premešteno iz FAZA 7)**
+    *   **Komentar:** Ovo su esencijalne funkcije za održavanje biblioteke.
+    *   **Dodatno razmatranje:** Potvrde za "Remove Game". Opcije za "Undo" za kritične operacije.
+
+---
+
+**NOVA FAZA 6 — UI unapređenje**
+*   **Obrazloženje:** "Tek kada backend bude stabilan" je zlatno pravilo.
+
+**15. UI unapređenje (premešteno iz FAZA 8)**
+    *   **Komentar:** Fokus na korisničko iskustvo i estetiku.
+
+---
+
+**NOVA FAZA 7 — Napredne funkcije**
+*   **Obrazloženje:** "Nice-to-have" funkcionalnosti koje dodatno obogaćuju iskustvo.
+
+**16. Napredne funkcije (premešteno iz FAZA 9)**
+    *   **Komentar:** Dugoročni planovi za rast.
+    *   **Dodatno razmatranje:** Da li će "Statistics" zahtevati praćenje pokretanja igara? Ako da, to može biti sigurnosno pitanje koje treba jasno komunicirati.
+
+---
+
+### **Sumarizovana, Predložena Struktura Faza:**
+
+*   **FAZA 0 — Trenutno stanje** (Nepromenjeno)
+
+*   **FAZA 1 — Završavanje osnovne biblioteke (MVP sa osnovnim UX-om)**
+    1.  Empty State
+    2.  Favorites sistem
+    3.  Search
+    4.  Genre sistem
+
+*   **FAZA 2 — Arhitektonske Osnove i Podaci**
+    5.  Game Identity Sistem (iz FAZE 6)
+    6.  Metadata Pipeline (iz FAZE 5)
+    7.  Metadata Cache (iz FAZE 5)
+    8.  Offline-first Ponašanje (detaljna razrada iz FAZE 2)
+    9.  Missing Metadata Queue (iz FAZE 6)
+
+*   **FAZA 3 — Pametno dodavanje igara (Ručno)**
+    10. Automatsko prepoznavanje igre (.exe input) (iz FAZE 2)
+    11. "Drag shortcut here" (iz FAZE 3)
+
+*   **FAZA 4 — Automatski Game Scanner**
+    12. Automatsko pronalaženje instaliranih igara (iz FAZE 4)
+    13. Automatsko dodavanje pronađenih igara (iz FAZE 4)
+
+*   **FAZA 5 — Upravljanje bibliotekom**
+    14. Game Management (iz FAZE 7)
+
+*   **FAZA 6 — UI unapređenje**
+    15. UI unapređenje (iz FAZE 8)
+
+*   **FAZA 7 — Napredne funkcije**
+    16. Napredne funkcije (iz FAZE 9)
+
+---
+
+### **Dodatni Opšti Predlozi:**
+
+1.  **Testiranje:** Integrisati testiranje u svaku fazu. Posebno su kritični testovi za integritet podataka (dodavanje, uklanjanje, prepoznavanje, duplikati).
+2.  **Error Handling:** Planirati kako će aplikacija reagovati na greške – nepronađeni .exe fajlovi, neuspela API konekcija, oštećeni .json fajl itd.
+3.  **Verzioniranje games.json:** Razmislite o verzionisanju `games.json` fajla. Ako dodajete nova polja, kako će se starija verzija fajla migrirati?
+4.  **Logging:** Implementirati sistem logovanja za lakše debagovanje i praćenje grešaka, posebno kod skeniranja i metadata fetchinga.
+5.  **User Settings:** Pre nego što dođete do FAZE 9, razmislite o osnovnim podešavanjima za putanje (npr. gde se čuva `games.json`, gde se keširaju coveri).
+
+Ovaj redosled bi trebao da omogući stabilniji razvoj, jer se temeljne arhitektonske odluke donose pre nego što se na njih nadograđuju kompleksne funkcionalnosti.
+Sve u svemu, fantastičan plan! Srećno sa razvojem!

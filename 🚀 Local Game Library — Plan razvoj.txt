@@ -1,0 +1,288 @@
+🚀 Local Game Library — Plan razvoja
+✅ FAZA 0 — Trenutno stanje
+
+Projekat je trenutno stabilan i osnovna funkcionalnost radi:
+
+Pokretanje aplikacije
+Prikaz igara u Grid prikazu
+Dodavanje igre
+Ručno biranje .exe fajla
+Automatsko kreiranje Game objekta
+Play dugme pokreće igru
+Remove from Library radi
+games.json čuva biblioteku
+Game Card prikazuje osnovne informacije
+Empty state poruke su planirane / sledeći mali korak
+Kod je očišćen od nepotrebnog main_functionality.py
+main.py i ui/game_card.py su bez prijavljenih problema
+FAZA 1 — Završavanje osnovne biblioteke
+1. Empty State
+
+Napraviti različite poruke kada:
+
+Biblioteka nema nijednu igru
+Favorites nema nijednu igru
+Search ne pronađe rezultate
+Filter po žanru ne pronađe rezultate
+
+Primer:
+
+Your library is empty
+Add your first game to get started.
++ Add Game
+
+Cilj: završiti osnovni UX bez menjanja dizajna.
+
+2. Favorites sistem
+
+Dodati:
+
+⭐ Favorite / Unfavorite
+Favorites filter
+Čuvanje favorite statusa u games.json
+Favorites ostaje sačuvan nakon restarta aplikacije
+3. Search
+
+Dodati pretragu:
+
+Po nazivu igre
+Real-time filtriranje
+Search radi zajedno sa Favorites
+Search radi zajedno sa Genre filterom
+4. Genre sistem
+
+Omogućiti:
+
+Genre podatak za igru
+Genre filter
+Kombinovanje:
+Search
+Genre
+Favorites
+FAZA 2 — Pametno dodavanje igara
+
+Ovo je deo koji smo poslednji put posebno razmatrali.
+
+5. Automatsko prepoznavanje igre
+
+Kada korisnik doda .exe:
+
+Aplikacija dobija putanju do executable-a
+Prepoznaje igru
+Automatski pokušava da pronađe:
+Title
+Genre
+Description
+Cover
+Developer
+Publisher
+Release date
+
+Korisnik ne mora ručno da popunjava sve podatke.
+
+6. Offline-first ponašanje
+
+Ovo je važna funkcionalnost koju smo definisali.
+
+Ako korisnik nema internet:
+
+Add Game
+    ↓
+Select .exe
+    ↓
+Game detected
+    ↓
+No Internet
+    ↓
+Game added immediately
+    ↓
+Basic metadata saved locally
+
+Kada se internet kasnije pojavi:
+
+Application starts
+    ↓
+Internet available
+    ↓
+Find games with missing metadata
+    ↓
+Fetch metadata automatically
+    ↓
+Update games.json
+    ↓
+Refresh UI
+
+Dakle:
+
+Igra se nikada ne blokira zbog nedostatka interneta.
+
+Biblioteka radi lokalno, a metadata se dopunjava kada internet bude dostupan.
+
+FAZA 3 — Drag & Drop
+7. "Drag shortcut here"
+
+Dodati zonu:
+
+Drag shortcut here
+
+Korisnik može da prevuče:
+
+Desktop shortcut .lnk
+Start Menu shortcut
+Game executable
+
+Aplikacija zatim:
+
+Čita shortcut
+Pronalazi target .exe
+Prepoznaje igru
+Dodaje je u biblioteku
+Pokušava da dobavi metadata
+
+Ovo bi bilo veoma korisno jer korisnik ne mora da traži instalacioni folder igre.
+
+FAZA 4 — Automatski Game Scanner
+8. Automatsko pronalaženje instaliranih igara
+
+Aplikacija može da skenira poznate lokacije:
+
+Steam
+Epic Games
+GOG
+Ubisoft Connect
+EA
+Xbox / Microsoft Store gde je moguće
+Custom game folders
+
+Ali:
+
+Local Game Library ne zavisi od ovih platformi.
+
+Platforme su samo izvori za pronalaženje igara.
+
+9. Automatsko dodavanje pronađenih igara
+
+Ako scanner pronađe novu igru:
+
+Scan
+ ↓
+Game found
+ ↓
+Already in library?
+ ├── Yes → Ignore
+ └── No → Add
+
+Ne sme da pravi duplikate.
+
+FAZA 5 — Metadata sistem
+10. Metadata pipeline
+
+Napraviti centralizovani sistem:
+
+Game
+ ↓
+Identify
+ ↓
+Metadata Provider
+ ↓
+Local Cache
+ ↓
+Game Object
+ ↓
+games.json
+ ↓
+UI
+
+Metadata provider treba da bude odvojen od UI-ja.
+
+To znači da kasnije možemo promeniti API ili dodati drugi izvor podataka bez menjanja cele aplikacije.
+
+11. Metadata cache
+
+Podaci se čuvaju lokalno.
+
+Ako je igra već jednom pronađena:
+
+Ne traži se ponovo bez potrebe
+Cover se čuva lokalno
+Metadata ostaje dostupna offline
+FAZA 6 — Library Intelligence
+12. Game identity sistem
+
+Svaka igra treba da ima stabilan identitet.
+
+Na primer:
+
+Game ID
+Game Name
+Executable Path
+Install Path
+
+To omogućava:
+
+Sprečavanje duplikata
+Promenu lokacije igre
+Prepoznavanje iste igre nakon ponovnog skeniranja
+13. Missing Metadata Queue
+
+Igre koje nisu potpuno prepoznate idu u red:
+
+Needs Metadata
+
+Aplikacija kasnije automatski pokušava da ih identifikuje.
+
+FAZA 7 — Game Management
+
+Dodati:
+
+Edit Game
+Change Cover
+Change executable
+Change install location
+Remove Game
+Open Install Folder
+Create Desktop Shortcut
+Verify executable path
+FAZA 8 — UI unapređenje
+
+Tek kada backend bude stabilan:
+
+Moderniji Game Cards
+Better sidebar
+Animacije
+Hover efekti
+Game details view
+Large cover
+Play button
+Favorite button
+Context menu
+
+UI redesign ostavljamo za kasnije.
+
+FAZA 9 — Napredne funkcije
+
+Kasnije:
+
+Statistics
+Recently Played
+Most Played
+Play Count
+Last Played
+Sorting
+Name
+Recently Added
+Recently Played
+Genre
+Collections
+RPG
+FPS
+Favorites
+Backlog
+Completed
+Custom Collections
+Settings
+Metadata providers
+Scan locations
+Auto-scan
+Startup behavior
+Theme
